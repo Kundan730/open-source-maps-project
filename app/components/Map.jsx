@@ -44,6 +44,8 @@ const LocationMarker = React.memo(() => {
   );
 });
 
+LocationMarker.displayName = 'LocationMarker';
+
 const Map = ({ center, zoom }) => {
   const [clickedPosition, setClickedPosition] = useState(null);
   const [showLocationMarker, setShowLocationMarker] = useState(false);
