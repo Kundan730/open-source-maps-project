@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 
 import S2 from 's2-geometry';
+import { latLngToCell } from 'h3-js';
 
 const Convert = ({ clickedPosition }) => {
   const [latitude, setLatitude] = useState('');
@@ -11,8 +12,6 @@ const Convert = ({ clickedPosition }) => {
   const [conversionResult, setConversionResult] = useState('');
   const [error, setError] = useState('');
 
-  const level = 15;
-  
   useEffect(() => {
     // Update latitude and longitude when clickedPosition changes
     setLatitude(clickedPosition[0]);
@@ -45,23 +44,35 @@ const Convert = ({ clickedPosition }) => {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     if (type === 'gps') {
       const latitudeDMS = convertToDMS(parseFloat(latitude), true);
       const longitudeDMS = convertToDMS(parseFloat(longitude), false);
-  
-      setConversionResult(`Latitude: ${latitudeDMS}, Longitude: ${longitudeDMS}`);
+
+      setConversionResult(
+        `Latitude: ${latitudeDMS}, Longitude: ${longitudeDMS}`
+      );
       setError('');
     } else if (type === 's2') {
-      // Convert the latitude and longitude to S2 key
-      const s2Key = S2.S2.latLngToKey(parseFloat(latitude), parseFloat(longitude), parseInt(level));
-  
-      setConversionResult(`S2 Cell: ${s2Key}`);
+      const s2Key = S2.S2.latLngToKey(
+        parseFloat(latitude),
+        parseFloat(longitude),
+        parseInt(15)
+      );
+
+      const id = S2.S2.keyToId(s2Key);
+
+      setConversionResult(`S2 Cell: ${s2Key}, ID: ${id}`);
       setError('');
+    } else if (type === 'h3') {
+        const h3Cell = latLngToCell(latitude, longitude, 7);
+    
+        setConversionResult(`H3 Cell: ${h3Cell}`);
+        setError('');
     } else {
       setError('This conversion type is not supported yet.');
     }
-  };  
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -125,11 +136,12 @@ const Convert = ({ clickedPosition }) => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <button
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         onClick={handleConvert}
       >
         Convert
       </button>
+
       {conversionResult && <p className="mt-4">{conversionResult}</p>}
     </div>
   );

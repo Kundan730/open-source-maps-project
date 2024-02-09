@@ -2,13 +2,20 @@
 
 import 'leaflet/dist/leaflet.css';
 import React, { useState, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from 'react-leaflet';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import Convert from './Convert';
 
 const markerIconOptions = {
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  iconRetinaUrl:
+    'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -53,7 +60,10 @@ const Map = ({ center, zoom }) => {
   const locationButtonRef = useRef(null);
 
   const handleMapClick = useCallback((e) => {
-    if (locationButtonRef.current && locationButtonRef.current.contains(e.originalEvent.target)) {
+    if (
+      locationButtonRef.current &&
+      locationButtonRef.current.contains(e.originalEvent.target)
+    ) {
       return;
     }
     const { lat, lng } = e.latlng;
@@ -87,11 +97,12 @@ const Map = ({ center, zoom }) => {
           <button
             ref={locationButtonRef}
             onMouseDown={handleButtonClick}
-            className="custom-map-button absolute top-4 right-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline z-10"
+            className="custom-map-button absolute top-4 right-4 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline z-10"
             style={{ zIndex: 1000 }}
           >
             <FaMapMarkerAlt className="mr-2" />
           </button>
+
           {showLocationMarker && <LocationMarker />}
         </MapContainer>
       </div>
