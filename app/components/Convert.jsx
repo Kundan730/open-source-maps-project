@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Convert = ({ clickedPosition }) => {
     const [latitude, setLatitude] = useState('');
@@ -9,24 +9,49 @@ const Convert = ({ clickedPosition }) => {
     const [conversionResult, setConversionResult] = useState('');
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        // Update latitude and longitude when clickedPosition changes
+        setLatitude(clickedPosition[0]);
+        setLongitude(clickedPosition[1]);
+    }, [clickedPosition]);
+
+    const convertToDMS = (coordinate, isLatitude) => {
+        if (coordinate === 0) {
+            return `0° ${isLatitude ? 'N' : 'E'}`;
+        }
+    
+        const absolute = Math.abs(coordinate);
+        const degrees = Math.floor(absolute);
+        const minutesNotTruncated = (absolute - degrees) * 60;
+        const minutes = Math.floor(minutesNotTruncated);
+        const seconds = Math.round((minutesNotTruncated - minutes) * 60);
+    
+        let direction = '';
+        if (isLatitude) {
+            direction = coordinate > 0 ? 'N' : 'S';
+        } else {
+            direction = coordinate > 0 ? 'E' : 'W';
+        }
+    
+        return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+    };
+
     const handleConvert = () => {
         if (!latitude || !longitude || !type) {
             setError('Please fill in all fields.');
             return;
         }
 
-        fetch(`/convert?lat=${latitude}&lng=${longitude}&type=${type}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data.');
-                }
-                return response.text();
-            })
-            .then(data => {
-                setConversionResult(data);
-                setError('');
-            })
-            .catch(error => setError(error.message));
+        if (type !== 'gps') {
+            setError('This conversion type is not supported yet.');
+            return;
+        }
+
+        const latitudeDMS = convertToDMS(parseFloat(latitude));
+        const longitudeDMS = convertToDMS(parseFloat(longitude));
+
+        setConversionResult(`Latitude: ${latitudeDMS}, Longitude: ${longitudeDMS}`);
+        setError('');
     };
 
     return (
@@ -41,7 +66,7 @@ const Convert = ({ clickedPosition }) => {
                     max="90"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    value={clickedPosition[0]}
+                    value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
                 />
             </div>
@@ -55,7 +80,7 @@ const Convert = ({ clickedPosition }) => {
                     max="180"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    value={clickedPosition[1]}
+                    value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
                 />
             </div>
