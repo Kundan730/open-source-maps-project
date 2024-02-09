@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-const Convert = () => {
+const Convert = ({ clickedPosition }) => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const [type, setType] = useState('');
@@ -30,7 +30,7 @@ const Convert = () => {
     };
 
     return (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto p-4">
             <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lat">Latitude:</label>
                 <input
@@ -41,7 +41,7 @@ const Convert = () => {
                     max="90"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    value={latitude}
+                    value={clickedPosition[0]}
                     onChange={(e) => setLatitude(e.target.value)}
                 />
             </div>
@@ -55,7 +55,7 @@ const Convert = () => {
                     max="180"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                    value={longitude}
+                    value={clickedPosition[1]}
                     onChange={(e) => setLongitude(e.target.value)}
                 />
             </div>

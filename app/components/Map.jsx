@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import { FaMapMarkerAlt } from 'react-icons/fa';
+import Convert from './Convert';
 
 const markerIconOptions = {
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
@@ -47,7 +48,7 @@ const LocationMarker = React.memo(() => {
 LocationMarker.displayName = 'LocationMarker';
 
 const Map = ({ center, zoom }) => {
-  const [clickedPosition, setClickedPosition] = useState(null);
+  const [clickedPosition, setClickedPosition] = useState('');
   const [showLocationMarker, setShowLocationMarker] = useState(false);
   const locationButtonRef = useRef(null);
 
@@ -94,6 +95,7 @@ const Map = ({ center, zoom }) => {
           {showLocationMarker && <LocationMarker />}
         </MapContainer>
       </div>
+      <Convert clickedPosition={clickedPosition} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Convert from "./components/Convert";
+import Location from "./components/Location";
 
 const Map = dynamic(() => import("./components/Map"), { ssr: false });
 
@@ -13,9 +14,9 @@ const Home = () => {
             <div className="w-full md:w-3/4 lg:w-2/3 xl:w-1/2 mb-8">
                 <Map center={indiaCenter} zoom={zoom} />
             </div>
-            <div className="w-full md:w-3/4 lg:w-2/3 xl:w-1/2">
+            {/* <div className="w-full md:w-3/4 lg:w-2/3 xl:w-1/2">
                 <Convert />
-            </div>
+            </div> */}
         </div>
     );
 };
